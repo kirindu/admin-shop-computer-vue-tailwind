@@ -1,64 +1,82 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { useMainStore } from '@/stores/main'
-import {mdiClipboardFlowOutline} from '@mdi/js'
-import CardBoxModal from '@/components/CardBoxModal.vue'
-import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
-import BaseLevel from '@/components/BaseLevel.vue'
-import BaseButtons from '@/components/BaseButtons.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import UserAvatar from '@/components/UserAvatar.vue'
-
-const size = 24; // Tamaño del ícono en píxeles
-const mdiIcon = mdiClipboardFlowOutline; // Este es el icono que estás mostrando
 
 
 
-defineProps({
-  checkable: Boolean
-})
-
-const mainStore = useMainStore()
-
-const items = computed(() => mainStore.clients)
-
-const perPage = ref(5)
-
-const currentPage = ref(0)
-
-const checkedRows = ref([])
-
-const itemsPaginated = computed(() =>
-  items.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1))
-)
-
-const remove = (arr, cb) => {
-  const newArr = []
-
-  arr.forEach((item) => {
-    if (!cb(item)) {
-      newArr.push(item)
-    }
-  })
-
-  return newArr
-}
-
-const checked = (isChecked, client) => {
-  if (isChecked) {
-    checkedRows.value.push(client)
-  } else {
-    checkedRows.value = remove(checkedRows.value, (row) => row.id === client.id)
-  }
-}
 </script>
 
 <template>
+<!-- 
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Product name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Color
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Category
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Apple MacBook Pro 17"
+                </th>
+                <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td>
+            </tr>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Microsoft Surface Pro
+                </th>
+                <td class="px-6 py-4">
+                    White
+                </td>
+                <td class="px-6 py-4">
+                    Laptop PC
+                </td>
+                <td class="px-6 py-4">
+                    $1999
+                </td>
+            </tr>
+            <tr class="bg-white dark:bg-gray-800">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Magic Mouse 2
+                </th>
+                <td class="px-6 py-4">
+                    Black
+                </td>
+                <td class="px-6 py-4">
+                    Accessories
+                </td>
+                <td class="px-6 py-4">
+                    $99
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+ -->
 
-  <table>
+
+ <table>
     <thead>
       <tr>
-        <th v-if="checkable" />
+        <th/>
         <th />
         <th>Shop Computer</th>
         <th>User</th>
@@ -68,13 +86,13 @@ const checked = (isChecked, client) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="client in itemsPaginated" :key="client.id">
-        <TableCheckboxCell v-if="checkable" @checked="checked($event, client)" />
+      <tr v-for="movement in mov.shopMovement" :key="movement.id">
+        <TableCheckboxCell" />
         <td class="border-b-0 lg:w-6 before:hidden">
 
 
           <div class="icon-container">
-    <!-- Icono SVG utilizando MDI -->
+
     <svg
       xmlns="http://www.w3.org/2000/svg"
       :width="size"
@@ -90,18 +108,16 @@ const checked = (isChecked, client) => {
 
         </td>
         <td data-label="Name">
-          {{ client.name }}
+          {{ movement.state }}
         </td>
         <td data-label="Company">
-          {{ client.company }}
+          {{  }}
         </td>
         <td data-label="City">
-          {{ client.city }}
+          {{ }}
         </td>
         <td data-label="Created" class="lg:w-1 whitespace-nowrap">
-          <small class="text-gray-500 dark:text-slate-400" :title="client.created">{{
-            client.created
-          }}</small>
+       
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           
@@ -110,13 +126,5 @@ const checked = (isChecked, client) => {
     </tbody>
   </table>
 
+
 </template>
-
-
-<style>
-.icon-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-</style>

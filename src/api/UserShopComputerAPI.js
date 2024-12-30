@@ -15,8 +15,12 @@ export default {
         return await api.get('/shop/' + rfidCode);
     },
 
-    async getShopMovement(rfidCode) {
-        return await api.get('/movement/' + rfidCode);
+    // async getShopMovement(rfidCode) {
+    //     return await api.get('/movement/' + rfidCode);
+    // },
+
+    async getShopMovement() {
+        return await api.get('/movement/',{});
     },
 
     async createShopMovement(values) {
