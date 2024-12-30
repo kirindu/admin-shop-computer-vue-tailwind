@@ -1,12 +1,44 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue'
-import { useMainStore } from '@/stores/main'
+
+import {storeToRefs} from 'pinia';
+import { onMounted, onBeforeUnmount, ref,onUnmounted, computed  } from 'vue';
+
+import {useConnectionStore} from '@/stores/connection.js';
+
+// Import composable
+import useCurrentTime from "@/composables/useCurrentTime";
+const {currentTime} = useCurrentTime();
+
+import useSweetAlert2Notification from "@/composables/useSweetAlert2";
+import useToastNotification from "@/composables/useToast.js";
+const { showSweetAlert, alertResult } = useSweetAlert2Notification();
+const {showToast} = useToastNotification();
+
+// MQTT STORE
+import {useSensorDHTStore} from "@/stores/sensorsMQTT.js";
+const sensorDHT = useSensorDHTStore();
+const {temperature, humidity, door, client, relay_status} = storeToRefs(sensorDHT);
+
+if (client.value === null) {
+  sensorDHT.connectToBroker();
+}
+//
+
+// Cuando nos salimos del programa cerramos el cliente MQTT
+onUnmounted(() => {
+  if (client.value) {
+    sensorDHT.disconnectMQTT();
+  }
+});
+
+
 import {
-  mdiAccountMultiple,
+  mdiButtonPointer,
   mdiThermometerLines ,
   mdiChartTimelineVariant,
   mdiDoor ,
-  mdiWaterPercent 
+  mdiWaterPercent,
+  mdiMonitorDashboard
 } from '@mdi/js'
 import * as chartConfig from '@/components/Charts/chart.config.js'
 import SectionMain from '@/components/SectionMain.vue'
@@ -27,13 +59,17 @@ onMounted(() => {
   fillChartData()
 })
 
+const doorState = computed(() => {
+       return count.value * 2
+    });
+
 
 </script>
 
 <template>
   <LayoutAuthenticated>
     <SectionMain>
-      <SectionTitleLineWithButton :icon="mdiChartTimelineVariant" title="Dashboard" main>
+      <SectionTitleLineWithButton :icon="mdiMonitorDashboard" title="Dashboard" main>
       
       </SectionTitleLineWithButton>
 
@@ -41,21 +77,21 @@ onMounted(() => {
         <CardBoxWidgetString
           color=text-violet-600
           :icon="mdiDoor"
-          data="Locked"
+          :data="door"
           label="Door"
           textcolor="text-red-400"
         />
         <CardBoxWidget
           color=text-violet-600
           :icon="mdiThermometerLines "
-          :number="22.32"
+          :number="temperature"
           suffix=" °F"
           label="Temperature"
         />
         <CardBoxWidget
           color=text-violet-600
           :icon="mdiWaterPercent "
-          :number="30.20"
+          :number="humidity"
           suffix="%"
           label="Humidity"
         />
@@ -74,7 +110,7 @@ onMounted(() => {
 
 
 
-      <SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Summary" />
+      <SectionTitleLineWithButton :icon="mdiButtonPointer" title="Summary" />
 
 
       <CardBox has-table>

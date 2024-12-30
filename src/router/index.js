@@ -10,16 +10,16 @@ const routes = [
     name: 'dashboard',
     component: () => import('@/views/HomeView.vue')
   },
-  // {
-  //   path: '/user',
-  //   name: 'user',
-  //   component: () => import('../views/UserView.vue')
-  // },
-  // {
-  //   path: '/shop',
-  //   name: 'shop',
-  //   component: () => import('../views/ShopView.vue')
-  // },
+  {
+    path: '/user',
+    name: 'user',
+    component: () => import('../views/UsersView.vue')
+  },
+  {
+    path: '/shop',
+    name: 'shop',
+    component: () => import('../views/LaptopsView.vue')
+  },
   {
     path: '/:pathMatch(.*)*',
     name: 'dashboard',

@@ -55,7 +55,8 @@ defineProps({
           {{ label }}
         </h3>
         <h1 class="text-3xl leading-tight font-semibold">
-          <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" />
+          <!-- <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" /> -->
+          {{prefix}} {{number}} {{suffix}}
         </h1>
       </div>
       <BaseIcon v-if="icon" :path="icon" size="48" w="" h="h-16" :class="color" />

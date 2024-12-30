@@ -11,12 +11,12 @@ export default [
     label: 'Dashboard'
   },
   {
-    to: '/forms',
+    to: '/shop',
     label: 'Laptops',
     icon: mdiLaptop 
   },
   {
-    to: '/ui',
+    to: '/user',
     label: 'Users',
     icon: mdiAccountMultiple
   },

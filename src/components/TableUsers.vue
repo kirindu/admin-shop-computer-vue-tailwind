@@ -1,16 +1,12 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useMainStore } from '@/stores/main'
-import {mdiClipboardFlowOutline} from '@mdi/js'
-import CardBoxModal from '@/components/CardBoxModal.vue'
 import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
-import BaseLevel from '@/components/BaseLevel.vue'
-import BaseButtons from '@/components/BaseButtons.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import UserAvatar from '@/components/UserAvatar.vue'
+import { mdiAccount} from '@mdi/js'
+
 
 const size = 24; // Tamaño del ícono en píxeles
-const mdiIcon = mdiClipboardFlowOutline; // Este es el icono que estás mostrando
+const mdiIcon = mdiAccount; // Este es el icono que estás mostrando
 
 
 
@@ -60,10 +56,10 @@ const checked = (isChecked, client) => {
       <tr>
         <th v-if="checkable" />
         <th />
-        <th>Shop Computer</th>
-        <th>User</th>
+        <th>Name</th>
+        <th>Code</th>
         <th>State</th>
-        <th>Date</th>
+        <th>Notes</th>
         <th />
       </tr>
     </thead>
@@ -71,6 +67,7 @@ const checked = (isChecked, client) => {
       <tr v-for="client in itemsPaginated" :key="client.id">
         <TableCheckboxCell v-if="checkable" @checked="checked($event, client)" />
         <td class="border-b-0 lg:w-6 before:hidden">
+
 
 
           <div class="icon-container">
@@ -86,7 +83,8 @@ const checked = (isChecked, client) => {
       <path :d="mdiIcon" />
     </svg>
   </div>
-  
+
+
 
         </td>
         <td data-label="Name">
@@ -111,7 +109,6 @@ const checked = (isChecked, client) => {
   </table>
 
 </template>
-
 
 <style>
 .icon-container {
