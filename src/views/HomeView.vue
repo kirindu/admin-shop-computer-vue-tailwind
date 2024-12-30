@@ -60,7 +60,11 @@ onMounted(() => {
 })
 
 const doorState = computed(() => {
-       return count.value * 2
+  if(door.value == 'on') {
+    return 'Closed'
+  }else {
+    return 'Open'
+  }
     });
 
 
@@ -77,7 +81,7 @@ const doorState = computed(() => {
         <CardBoxWidgetString
           color=text-violet-600
           :icon="mdiDoor"
-          :data="door"
+          :data="doorState"
           label="Door"
           textcolor="text-red-400"
         />
