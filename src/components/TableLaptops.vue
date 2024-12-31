@@ -1,56 +1,44 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { useMainStore } from '@/stores/main'
+import { onMounted} from 'vue';
+
+
 import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
-import { mdiLaptop} from '@mdi/js'
+import { mdiClipboardFlowOutline } from '@mdi/js'
+
+import {useShopStore} from "@/stores/shopComputers.js";
+const storeShop = useShopStore();
 
 const size = 24; // Tamaño del ícono en píxeles
-const mdiIcon = mdiLaptop; // Este es el icono que estás mostrando
+const mdiIcon = mdiClipboardFlowOutline ; // Este es el icono que estás mostrando
 
 
 defineProps({
   checkable: Boolean
 })
 
-const mainStore = useMainStore()
 
-const items = computed(() => mainStore.clients)
 
-const perPage = ref(5)
+onMounted(() => {
 
-const currentPage = ref(0)
+ 
+  // setTimeout(() => {
+   
+  // }, 25)
+ 
+})
 
-const checkedRows = ref([])
-
-const itemsPaginated = computed(() =>
-  items.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1))
-)
-
-const remove = (arr, cb) => {
-  const newArr = []
-
-  arr.forEach((item) => {
-    if (!cb(item)) {
-      newArr.push(item)
-    }
-  })
-
-  return newArr
+const estado = (param) => {
+    if(param == '1') return 'Active'
+    else return 'Inactive'
 }
 
-const checked = (isChecked, client) => {
-  if (isChecked) {
-    checkedRows.value.push(client)
-  } else {
-    checkedRows.value = remove(checkedRows.value, (row) => row.id === client.id)
-  }
-}
+ 
+
 </script>
 
 <template>
 
-
-  <table>
+<table>
     <thead>
       <tr>
         <th v-if="checkable" />
@@ -63,7 +51,7 @@ const checked = (isChecked, client) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="client in itemsPaginated" :key="client.id">
+      <tr v-for="laptop in storeShop.laptops" :key="laptop._id">
         <TableCheckboxCell v-if="checkable" @checked="checked($event, client)" />
         <td class="border-b-0 lg:w-6 before:hidden">
 
@@ -85,19 +73,17 @@ const checked = (isChecked, client) => {
   
   
         </td>
-        <td data-label="Name">
-          {{ client.name }}
+        <td data-label="Shop Computer">
+     {{ laptop.name}}
         </td>
-        <td data-label="Company">
-          {{ client.company }}
+        <td data-label="RFID">
+          {{ laptop.RFID}}
         </td>
-        <td data-label="City">
-          {{ client.city }}
+        <td data-label="State">
+          {{estado(laptop.state)}}
         </td>
-        <td data-label="Created" class="lg:w-1 whitespace-nowrap">
-          <small class="text-gray-500 dark:text-slate-400" :title="client.created">{{
-            client.created
-          }}</small>
+        <td data-label="Notes" class="lg:w-1 whitespace-nowrap">
+          <span class="text-gray-500 dark:text-slate-400" > {{laptop.notes}}</span>
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           

@@ -1,98 +1,63 @@
 <script setup>
+import { onMounted} from 'vue';
 
 
+import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
+import { mdiClipboardFlowOutline } from '@mdi/js'
+
+import {useMovStore} from "@/stores/movements.js";
+const storeMov = useMovStore();
+
+import useFormatDate from "@/composables/useFormatDate.js";
+const { formattingDate } = useFormatDate();
+
+const size = 24; // Tamaño del ícono en píxeles
+const mdiIcon = mdiClipboardFlowOutline ; // Este es el icono que estás mostrando
+
+
+defineProps({
+  checkable: Boolean
+})
+
+
+
+onMounted(() => {
+
+ 
+  // setTimeout(() => {
+   
+  // }, 25)
+ 
+})
+
+ 
 
 </script>
 
 <template>
-<!-- 
-<div class="relative overflow-x-auto">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    Product name
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Color
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Category
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Price
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Apple MacBook Pro 17"
-                </th>
-                <td class="px-6 py-4">
-                    Silver
-                </td>
-                <td class="px-6 py-4">
-                    Laptop
-                </td>
-                <td class="px-6 py-4">
-                    $2999
-                </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Microsoft Surface Pro
-                </th>
-                <td class="px-6 py-4">
-                    White
-                </td>
-                <td class="px-6 py-4">
-                    Laptop PC
-                </td>
-                <td class="px-6 py-4">
-                    $1999
-                </td>
-            </tr>
-            <tr class="bg-white dark:bg-gray-800">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Magic Mouse 2
-                </th>
-                <td class="px-6 py-4">
-                    Black
-                </td>
-                <td class="px-6 py-4">
-                    Accessories
-                </td>
-                <td class="px-6 py-4">
-                    $99
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
- -->
 
-
- <table>
+<table>
     <thead>
       <tr>
-        <th/>
+        <th v-if="checkable" />
         <th />
         <th>Shop Computer</th>
         <th>User</th>
         <th>State</th>
         <th>Date</th>
+        <th>Notes</th>
         <th />
       </tr>
     </thead>
     <tbody>
-      <tr v-for="movement in mov.shopMovement" :key="movement.id">
-        <TableCheckboxCell" />
+      <tr v-for="mov in storeMov.movs" :key="mov._id">
+        <TableCheckboxCell v-if="checkable" @checked="checked($event, client)" />
         <td class="border-b-0 lg:w-6 before:hidden">
 
 
-          <div class="icon-container">
 
+          <div class="icon-container">
+    <!-- Icono SVG utilizando MDI -->
     <svg
       xmlns="http://www.w3.org/2000/svg"
       :width="size"
@@ -105,19 +70,22 @@
     </svg>
   </div>
   
-
+  
         </td>
         <td data-label="Name">
-          {{ movement.state }}
+        {{mov.shopComputer.name}}
         </td>
         <td data-label="Company">
-          {{  }}
+          {{mov.user.name}}
         </td>
         <td data-label="City">
-          {{ }}
+          {{mov.state}}
+        </td>
+        <td data-label="City">
+          {{formattingDate(mov.dateCheckIn, "MMMM D, YYYY h:mm A")}}
         </td>
         <td data-label="Created" class="lg:w-1 whitespace-nowrap">
-       
+          <span class="text-gray-500 dark:text-slate-400" > {{mov.notes}}</span>
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           
@@ -126,5 +94,12 @@
     </tbody>
   </table>
 
-
 </template>
+
+<style>
+.icon-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+</style>

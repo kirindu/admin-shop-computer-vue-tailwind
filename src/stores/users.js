@@ -2,8 +2,8 @@ import { ref, onMounted } from "vue";
 import { defineStore } from "pinia";
 import UserShopCompuerAPI from "@/api/ShopComputerAPI.js"
 
-export const useMovStore = defineStore("movs", () => {
-  const movs = ref([]);
+export const useUserShopStore = defineStore("users", () => {
+  const users = ref([]);
   const loading = ref(false);
   const error = ref("");
 
@@ -11,8 +11,8 @@ export const useMovStore = defineStore("movs", () => {
     loading.value = true;
 
     try {
-      const { data } = await UserShopCompuerAPI.getShopMovement();
-      movs.value = data.shopMovements; // Recuerda que data es el wrap de axios
+      const { data } = await UserShopCompuerAPI.getAllUserShopComputer();
+      users.value = data.user; // Recuerda que data es el wrap de axios
 
     } catch (err) {
       error.value = `Ocurrio el siguiente error al intentar llamar al servicio de usuarios: ${err}`;
@@ -22,7 +22,7 @@ export const useMovStore = defineStore("movs", () => {
   });
 
   return {
-    movs,
+    users,
     loading,
     error,
   };

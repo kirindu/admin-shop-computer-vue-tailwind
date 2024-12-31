@@ -3,16 +3,6 @@
 import {storeToRefs} from 'pinia';
 import { onMounted, onBeforeUnmount, ref,onUnmounted, computed  } from 'vue';
 
-import {useConnectionStore} from '@/stores/connection.js';
-
-// Import composable
-import useCurrentTime from "@/composables/useCurrentTime";
-const {currentTime} = useCurrentTime();
-
-import useSweetAlert2Notification from "@/composables/useSweetAlert2";
-import useToastNotification from "@/composables/useToast.js";
-const { showSweetAlert, alertResult } = useSweetAlert2Notification();
-const {showToast} = useToastNotification();
 
 // MQTT STORE
 import {useSensorDHTStore} from "@/stores/sensorsMQTT.js";
@@ -40,7 +30,7 @@ import {
   mdiWaterPercent,
   mdiMonitorDashboard
 } from '@mdi/js'
-import * as chartConfig from '@/components/Charts/chart.config.js'
+
 import SectionMain from '@/components/SectionMain.vue'
 import CardBoxWidget from '@/components/CardBoxWidget.vue'
 import CardBoxWidgetString from '@/components/CardBoxWidgetString.vue'
@@ -49,14 +39,10 @@ import TableSummary from '@/components/TableSummary.vue'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
 
-const chartData = ref(null)
 
-const fillChartData = () => {
-  chartData.value = chartConfig.sampleChartData()
-}
 
 onMounted(() => {
-  fillChartData()
+ 
 })
 
 const doorState = computed(() => {
@@ -77,7 +63,7 @@ const doorState = computed(() => {
       
       </SectionTitleLineWithButton>
 
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 mb-6">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
         <CardBoxWidgetString
           color=text-violet-600
           :icon="mdiDoor"
@@ -100,7 +86,7 @@ const doorState = computed(() => {
           label="Humidity"
         />
 
-        <CardBoxWidget
+        <!-- <CardBoxWidget
           trend="Overflow"
           trend-type="alert"
           color="text-red-500"
@@ -108,7 +94,7 @@ const doorState = computed(() => {
           :number="256"
           suffix="%"
           label="Performance"
-        />
+        /> -->
 
       </div>
 
