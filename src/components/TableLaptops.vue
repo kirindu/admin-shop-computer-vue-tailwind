@@ -2,8 +2,16 @@
 import { onMounted} from 'vue';
 
 
-import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
-import { mdiClipboardFlowOutline } from '@mdi/js'
+import TableCheckboxCell from '@/components/TableCheckboxCell.vue';
+import { mdiClipboardFlowOutline, mdiPencil, mdiTrashCan} from '@mdi/js';
+import BaseButtons from '@/components/BaseButtons.vue';
+import BaseButton from '@/components/BaseButton.vue';
+
+import { openModal } from "@kolirt/vue-modal";
+import { defineAsyncComponent } from "vue";
+
+
+
 
 import {useShopStore} from "@/stores/shopComputers.js";
 const storeShop = useShopStore();
@@ -15,6 +23,25 @@ const mdiIcon = mdiClipboardFlowOutline ; // Este es el icono que estás mostran
 defineProps({
   checkable: Boolean
 })
+
+// Metodos
+const openLaptopEditModal = async () => {
+
+await openModal(
+  defineAsyncComponent(() => import("@/components/modals/LaptopEditModal.vue")),
+  {
+    test: "some props",
+  }
+)
+  // runs when modal is closed via confirmModal
+  .then((data) => {
+    console.log("success", data);
+  })
+  // runs when modal is closed via closeModal or esc
+  .catch(() => {
+    console.log("catch");
+  });
+};
 
 
 
@@ -86,12 +113,20 @@ const estado = (param) => {
           <span class="text-gray-500 dark:text-slate-400" > {{laptop.notes}}</span>
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
-          
+          <BaseButtons type="justify-start lg:justify-end" no-wrap>
+            <BaseButton color="info" :icon="mdiPencil" small  @click="openLaptopEditModal"  />
+            <BaseButton
+              color="danger"
+              :icon="mdiTrashCan"
+              small
+              
+            />
+          </BaseButtons>
         </td>
       </tr>
     </tbody>
   </table>
-
+  <ModalTarget />
 </template>
 
 <style>

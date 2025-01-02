@@ -3,7 +3,7 @@ import { onMounted} from 'vue';
 
 
 import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
-import { mdiClipboardFlowOutline } from '@mdi/js'
+import { mdiClipboardFlowOutline} from '@mdi/js'
 
 import {useMovStore} from "@/stores/movements.js";
 const storeMov = useMovStore();
@@ -23,10 +23,6 @@ defineProps({
 
 onMounted(() => {
 
- 
-  // setTimeout(() => {
-   
-  // }, 25)
  
 })
 
@@ -87,9 +83,11 @@ onMounted(() => {
         <td data-label="Created" class="lg:w-1 whitespace-nowrap">
           <span class="text-gray-500 dark:text-slate-400" > {{mov.notes}}</span>
         </td>
+
         <td class="before:hidden lg:w-1 whitespace-nowrap">
-          
+
         </td>
+
       </tr>
     </tbody>
   </table>

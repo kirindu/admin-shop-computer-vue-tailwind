@@ -9,20 +9,20 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@kolirt/vue-modal": "^1.0.3",
     "@mdi/js": "^7.0.96",
-    "axios": "^1.5.0",
-    "chart.js": "^4.4.0",
-    "numeral": "^2.0.6",
-    "pinia": "^2.1.6",
-    "vue": "^3.3.4",
-    "vue-router": "^4.2.4",
     "@vueuse/core": "^11.3.0",
     "@vueuse/sound": "^2.0.1",
+    "axios": "^1.5.0",
+    "chart.js": "^4.4.0",
     "dayjs": "^1.11.10",
     "mqtt": "^5.5.0",
+    "numeral": "^2.0.6",
+    "pinia": "^2.1.6",
     "sweetalert2": "^11.14.5",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
     "vue-toast-notification": "^3.1.3"
-
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",

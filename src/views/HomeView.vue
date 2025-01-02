@@ -25,10 +25,10 @@ onUnmounted(() => {
 import {
   mdiButtonPointer,
   mdiThermometerLines ,
-  mdiChartTimelineVariant,
   mdiDoor ,
   mdiWaterPercent,
-  mdiMonitorDashboard
+  mdiMonitorDashboard,
+  mdiTableOff
 } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -38,7 +38,6 @@ import CardBox from '@/components/CardBox.vue'
 import TableSummary from '@/components/TableSummary.vue'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
-
 
 
 onMounted(() => {
@@ -101,7 +100,6 @@ const doorState = computed(() => {
 
 
       <SectionTitleLineWithButton :icon="mdiButtonPointer" title="Summary" />
-
 
       <CardBox has-table>
         <TableSummary />

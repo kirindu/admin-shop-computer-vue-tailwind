@@ -1,40 +1,46 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
+import { createModal } from '@kolirt/vue-modal'
+
 import App from './App.vue'
 import router from './router'
-import { useMainStore } from '@/stores/main.js'
 
-import './css/main.css'
+import './css/main.css';
+
+
+
+const app = createApp(App);
 
 // Init Pinia
-const pinia = createPinia()
+app.use(createPinia());
+app.use(router);
 
-// Create Vue app
-createApp(App).use(router).use(pinia).mount('#app')
+app.use(createModal({
+  transitionTime: 200,
+  animationType: 'slideDown',
+  modalStyle: {
+    padding: '5rem 2rem',
+    align: 'center',
+    'z-index': 201
+  },
+  overlayStyle: {
+    'background-color': 'rgba(0, 0, 0, .5)',
+    'z-index': 200
+  }
+}));
 
-// Init main store
-const mainStore = useMainStore(pinia)
 
-// Fetch sample data
-mainStore.fetchSampleClients()
-mainStore.fetchSampleHistory()
+app.mount("#app");
 
-// Dark mode
-// Uncomment, if you'd like to restore persisted darkMode setting, or use `prefers-color-scheme: dark`. Make sure to uncomment localStorage block in src/stores/darkMode.js
 import { useDarkModeStore } from './stores/darkMode'
 
-const darkModeStore = useDarkModeStore(pinia)
+const darkModeStore = useDarkModeStore();
 
-if (
-  (!localStorage['darkMode'] && window.matchMedia('(prefers-color-scheme: dark)').matches) ||
-  localStorage['darkMode'] === '1'
-) {
-  darkModeStore.set(true)
-}
+darkModeStore.set();
 
 // Default title tag
-const defaultDocumentTitle = 'Admin One Vue 3 Tailwind'
+const defaultDocumentTitle = 'Admin Shop Computer'
 
 // Set document title from route meta
 router.afterEach((to) => {

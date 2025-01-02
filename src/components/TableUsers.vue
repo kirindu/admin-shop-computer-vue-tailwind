@@ -1,7 +1,13 @@
 <script setup>
 
-import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
-import { mdiAccount} from '@mdi/js'
+import TableCheckboxCell from '@/components/TableCheckboxCell.vue';
+import { mdiAccount, mdiPencil, mdiTrashCan} from '@mdi/js';
+import BaseButtons from '@/components/BaseButtons.vue';
+import BaseButton from '@/components/BaseButton.vue';
+
+import { openModal } from "@kolirt/vue-modal";
+import { defineAsyncComponent } from "vue";
+
 
 const size = 24; // Tamaño del ícono en píxeles
 const mdiIcon = mdiAccount; // Este es el icono que estás mostrando
@@ -13,7 +19,27 @@ const userShop = useUserShopStore();
 
 defineProps({
   checkable: Boolean
-})
+});
+
+// Metodos
+const openUserEditModal = async () => {
+
+await openModal(
+  defineAsyncComponent(() => import("@/components/modals/UserEditModal.vue")),
+  {
+    test: "some props",
+  }
+)
+  // runs when modal is closed via confirmModal
+  .then((data) => {
+    console.log("success", data);
+  })
+  // runs when modal is closed via closeModal or esc
+  .catch(() => {
+    console.log("catch");
+  });
+};
+
 
 
   const estado = (param) => {
@@ -74,12 +100,20 @@ defineProps({
             <span class="text-gray-500 dark:text-slate-400" > {{user.notes}}</span>
           </td>
           <td class="before:hidden lg:w-1 whitespace-nowrap">
-            
-          </td>
+          <BaseButtons type="justify-start lg:justify-end" no-wrap>
+            <BaseButton color="info" :icon="mdiPencil" small  @click="openUserEditModal"  />
+            <BaseButton
+              color="danger"
+              :icon="mdiTrashCan"
+              small
+              
+            />
+          </BaseButtons>
+        </td>
         </tr>
       </tbody>
     </table>
-  
+    <ModalTarget />
   </template>
 <style>
 .icon-container {
