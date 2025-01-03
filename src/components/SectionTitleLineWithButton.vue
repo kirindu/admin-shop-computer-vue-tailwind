@@ -24,7 +24,7 @@ const hasSlot = computed(() => useSlots().default)
       <IconRounded v-if="icon && main" :icon="icon" color="light" class="mr-3" bg />
       <BaseIcon v-else-if="icon" :path="icon" class="mr-2" size="20" />
       <h1 :class="main ? 'text-3xl' : 'text-2xl'" class="leading-tight">
-        <span style="color:#edf9fe">{{ title }}</span>
+        {{ title }}
       </h1>
     </div>
     <slot v-if="hasSlot" />

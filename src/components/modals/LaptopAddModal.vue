@@ -38,11 +38,12 @@ const submit = () => {
 <template>
 
 <div class="vh-100" style="background-color: #1e293b">
-    <SectionMain>
-      <SectionTitleLineWithButton :icon="mdiBallotOutline" title="Edit Laptop" main>
+    <SectionMain style="color: snow;">
+      <SectionTitleLineWithButton :icon="mdiBallotOutline" title="Add Laptop" main>
 
       </SectionTitleLineWithButton>
       <CardBox form @submit.prevent="submit">
+        
         <FormField label="Grouped with icons">
           <FormControl v-model="form.name" :icon="mdiAccount" />
           <FormControl v-model="form.email" type="email" :icon="mdiMail" />
