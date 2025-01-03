@@ -32,4 +32,9 @@ export default {
     },
 
 
+    async addShopComputer(values) {
+        const data = await api.post('/shop/', values, {});
+        return data;
+      },
+
 }
