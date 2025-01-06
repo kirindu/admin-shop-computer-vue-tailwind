@@ -12,6 +12,17 @@ import { defineAsyncComponent } from "vue";
 const size = 24; // Tamaño del ícono en píxeles
 const mdiIcon = mdiAccount; // Este es el icono que estás mostrando
 
+import useSweetAlert2Notification from "@/composables/useSweetAlert2";
+const { showSweetAlert, alertResult } = useSweetAlert2Notification();
+
+import useToastNotification from "@/composables/useToast";
+const { showToast } = useToastNotification();
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+// Importamos el api
+import ShopAPI from '@/api/ShopComputerAPI'
 
 
 import {useUserShopStore} from "@/stores/users.js";
@@ -22,12 +33,12 @@ defineProps({
 });
 
 // Metodos
-const openUserEditModal = async () => {
+const openUserEditModal = async (user) => {
 
 await openModal(
   defineAsyncComponent(() => import("@/components/modals/UserEditModal.vue")),
   {
-    test: "some props",
+    user: user,
   }
 )
   // runs when modal is closed via confirmModal
@@ -46,6 +57,60 @@ await openModal(
     if(param == '1') return 'Active'
     else return 'Inactive'
 }
+
+const deleteUser = async (user) => {
+
+  showSweetAlert({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    allowOutsideClick: false,
+  }).then(async () => {
+    if (alertResult.value.isConfirmed) {
+
+      try {
+        const { data } = await ShopAPI.deleteUser(user._id);
+        if (data.ok) {
+          showSweetAlert({
+            title: "Deleted!",
+            text: "User has been deleted.",
+            icon: "success",
+            showCloseButton: true,
+            allowOutsideClick: false
+          }).then(() => {
+            router.go();
+          });
+        } else {
+          await showSweetAlert({
+            title: "User hasn't been deleted!",
+            text: data.msg,
+            icon: "warning",
+            showCloseButton: true,
+            allowOutsideClick: false
+          }).then(() => {
+            router.go();
+          });
+        }
+      } catch (error) {
+        const data = error.response.data;
+        showToast({
+          message: data.msg,
+          type: "error",
+          position: "top",
+          duration: 4000,
+        });
+      } finally {
+        // loading.value = false;
+      }
+    }
+  });
+
+};
+
 
 
 </script>
@@ -68,9 +133,9 @@ await openModal(
         <tr v-for="user in userShop.users" :key="user._id">
           <TableCheckboxCell v-if="checkable" @checked="checked($event, client)" />
           <td class="border-b-0 lg:w-6 before:hidden">
-  
-  
-  
+
+
+
             <div class="icon-container">
       <!-- Icono SVG utilizando MDI -->
       <svg
@@ -84,8 +149,8 @@ await openModal(
         <path :d="mdiIcon" />
       </svg>
     </div>
-    
-    
+
+
           </td>
           <td data-label="Name">
         {{user.name}}
@@ -101,12 +166,13 @@ await openModal(
           </td>
           <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons type="justify-start lg:justify-end" no-wrap>
-            <BaseButton color="info" :icon="mdiPencil" small  @click="openUserEditModal"  />
+            <BaseButton color="info" :icon="mdiPencil" small  @click="openUserEditModal(user)"  />
             <BaseButton
               color="danger"
               :icon="mdiTrashCan"
               small
-              
+              @click="deleteUser(user)"
+
             />
           </BaseButtons>
         </td>

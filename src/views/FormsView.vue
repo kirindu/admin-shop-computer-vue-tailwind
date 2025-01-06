@@ -22,8 +22,8 @@ const selectOptions = [
 ]
 
 const form = reactive({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+  name: 'Admin',
+  email: 'admin@example.com',
   phone: '',
   department: selectOptions[0],
   subject: '',
@@ -73,7 +73,7 @@ const formStatusSubmit = () => {
           <FormControl v-model="form.name" :icon="mdiAccount" />
           <FormControl v-model="form.email" type="email" :icon="mdiMail" />
         </FormField>
-  
+
         <FormField label="With help line" help="Do not enter the leading zero">
           <FormControl v-model="form.phone" type="tel" placeholder="Your phone number" />
         </FormField>

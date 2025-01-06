@@ -37,4 +37,39 @@ export default {
         return data;
       },
 
+  async addUser(values) {
+    const data = await api.post('/users/', values, {});
+    return data;
+  },
+
+
+  async deleteShopComputer(idLaptop) {
+
+    const data = await api.delete('/shop/' + idLaptop, {});
+    return data;
+
+  },
+
+  async deleteUser(idUser) {
+
+    const data = await api.delete('/users/' + idUser, {});
+    return data;
+
+  },
+
+  async editShopComputer(idLaptop, values) {
+
+    const data = await api.put('/shop/' + idLaptop, values, {});
+    return data;
+
+  },
+
+  async editUser(idUser, values) {
+
+    const data = await api.put('/users/' + idUser, values, {});
+    return data;
+
+  },
+
+
 }

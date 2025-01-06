@@ -24,8 +24,6 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Import composables
-import useToastNotification from '@/composables/useToast'
-const { showToast } = useToastNotification()
 
 import useSweetAlert2Notification from '@/composables/useSweetAlert2'
 const { showSweetAlert, alertResult } = useSweetAlert2Notification()
@@ -33,84 +31,106 @@ const { showSweetAlert, alertResult } = useSweetAlert2Notification()
 const loading = ref(false)
 
 // Librerias para validar Formularios
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
 
-const {
-  defineField,
-  errors,
-  handleSubmit,
-  isSubmitting,
-  resetForm,
-  setFieldValue,
-  setValues,
-  meta,
-  value
-} = useForm({
-  validationSchema: yup.object({
-    name: yup.string().required('The name is requiered'),
-    rfid: yup.string().required('The rfid is requiered'),
-    notes: yup.string()
-  })
-})
+// Estado reactivo del formulario
+const form = reactive({
+  name: "",
+  RFID: "",
+  notes: "",
+  BeaconUID:"none"
+});
 
-const [name, nameAttrs] = defineField('name', { validateOnModelUpdate: false })
-const [rfid, rfidAttrs] = defineField('rfid', { validateOnModelUpdate: false })
-const [notes, notesAttrs] = defineField('notes', { validateOnModelUpdate: false })
+// Estado reactivo para errores
+const errors = reactive({
+  name: null,
+  RFID: null,
+});
 
-const formData = new FormData()
+// Función para validar los campos
+const validateForm = () => {
+  let isValid = true;
 
-const onSubmit = handleSubmit(async (values, { resetForm }) => {
-  loading.value = true
-
-  formData.append('name', values.name)
-  formData.append('rfid', values.rfid)
-  formData.append('notes', values.notes)
-
-  try {
-    const { data } = await ShopAPI.addShopComputer(formData)
-
-    if (data.ok) {
-      showSweetAlert({
-        title: 'Shop Computer created successfully!',
-        icon: 'success',
-        showDenyButton: false,
-        showCancelButton: false,
-        confirmButtonText: 'Ok',
-        allowOutsideClick: false
-      }).then(() => {
-        if (alertResult.value.isConfirmed) {
-          closeModal().then(() => {
-            router.go() // Recarga la pagina actual
-          })
-        }
-      })
-    } else {
-      showSweetAlert({
-        title: 'Shop Computer no se pudo crear!',
-        text: data.msg,
-        icon: 'warning',
-        showDenyButton: false,
-        showCancelButton: false,
-        confirmButtonText: 'Ok',
-        allowOutsideClick: false
-      })
-    }
-  } catch (error) {
-    const data = error.response.data
-
-    showToast({
-      message: data.msg,
-      type: 'error',
-      position: 'top',
-      duration: 4000
-    })
-  } finally {
-    loading.value = false
+  // Validar campo Name
+  if (!form.name.trim()) {
+    errors.name = "El campo Name es requerido.";
+    isValid = false;
+  } else {
+    errors.name = null;
   }
 
-  resetForm() // Limpiamos el formulario una ves realizado el submit
-})
+  // Validar campo RFID
+  if (!form.RFID.trim()) {
+    errors.RFID = "El campo RFID es requerido.";
+    isValid = false;
+  } else {
+    errors.RFID = null;
+  }
+
+  return isValid;
+};
+
+
+const handleSubmit = async () => {
+
+  const jsonPayload = { ...form };
+
+  if (validateForm()) {
+    loading.value = true;
+    try {
+      const { data } = await ShopAPI.addShopComputer(jsonPayload);
+
+      if (data.ok) {
+        showSweetAlert({
+          title: 'Shop Computer created successfully!',
+          icon: 'success',
+          showCloseButton: true,
+          allowOutsideClick: false
+        }).then(() => {
+            closeModal().then(() => {
+              router.go() // Recarga la pagina actual
+            })
+        })
+      } else {
+
+         await showSweetAlert({
+           title: 'Shop Computer no se pudo crear!',
+           text: data.msg,
+           icon: 'warning',
+           showCloseButton: true,
+           allowOutsideClick: false
+         }).then(() => {
+           closeModal().then(() => {
+             router.go() // Recarga la pagina actual
+           })
+         })
+      }
+    } catch (error) {
+      const data = error.response.data;
+
+      await showSweetAlert({
+        title: 'Shop Computer no se pudo crear!',
+        text: data.msg,
+        icon: 'error',
+        showCloseButton: true,
+        allowOutsideClick: false
+      }).then(() => {
+        closeModal().then(() => {
+          router.go() // Recarga la pagina actual
+        })
+      })
+
+
+    } finally {
+      loading.value = false
+    }
+
+  } else {
+
+    // TODO
+  }
+
+};
+
 </script>
 
 <template>
@@ -119,28 +139,33 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       <SectionTitleLineWithButton :icon="mdiBallotOutline" title="Add Laptop" main>
       </SectionTitleLineWithButton>
 
-    <CardBox form autocomplete="off" @submit="onSubmit">
+    <CardBox form @submit="handleSubmit">
 
         <FormField label="">
-          <FormControl v-model="name" v-bind="nameAttrs" type="text" placeholder="Computer Name" required="required" :icon="mdiAccount" />
-          <FormControl v-model="rfid" v-bind="rfidAttrs" type="text" placeholder="RFID" required="required" :icon="mdiMail" />
+          <FormControl v-model="form.name" :class="{ 'is-invalid': errors.name }"  type="text" placeholder="Computer Name" required="required" :icon="mdiAccount" />
+          <FormControl v-model="form.RFID" :class="{ 'is-invalid': errors.RFID }"  type="text" placeholder="RFID" required="required" :icon="mdiMail" />
         </FormField>
 
-      <div style="width: 100%; margin-top: 0.25rem; font-size: 0.875em; color: #e41a01;">
-        {{ errors.name }}
-      </div>
+
+      <FormField label="" style="margin-top: -15px">
+        <p v-if="errors.name" class="error-message">{{ errors.name }}</p>
+        <p v-if="errors.RFID" class="error-message">{{ errors.RFID }}</p>
+      </FormField>
+
+
 
 
         <BaseDivider />
 
         <FormField label="" help="Your notes. Max 255 characters">
-          <FormControl v-model="notes" v-bind="notesAttrs" type="textarea" placeholder="Notes" />
+          <FormControl v-model="form.notes"  type="textarea" placeholder="Notes" />
         </FormField>
 
 
         <template #footer>
           <BaseButtons>
-            <BaseButton type="submit" color="info" label="Submit" :disabled="loading" />
+<!--            <BaseButton type="submit" color="info" label="Submit" :disabled="loading" />-->
+            <BaseButton color="info" label="Submit" :disabled="loading" @click="handleSubmit"  />
             <BaseButton type="reset" color="info" outline label="Close" @click.prevent="closeModal" />
           </BaseButtons>
 
@@ -150,85 +175,18 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
       </CardBox>
 
-<!--      <form autocomplete="off" @submit="onSubmit">-->
-<!--        <div class="col-xl-12 col-lg-12">-->
-<!--          <div class="card">-->
-
-<!--            <div class="card-body">-->
-
-<!--              <div class="basic-form">-->
-<!--                <div class="row">-->
-
-<!--                  <div class="mb-3 col-md-6">-->
-<!--                    <label class="form-label" for="thename">RFID</label>-->
-<!--                    <input-->
-<!--                      id="thename"-->
-<!--                      v-model="name"-->
-<!--                      v-bind="nameAttrs"-->
-<!--                      type="text"-->
-<!--                      class="form-control"-->
-<!--                      autocomplete="off"-->
-<!--                    />-->
-<!--                    <div-->
-<!--                      style="width: 100%; margin-top: 0.25rem; font-size: 0.875em; color: #e41a01"-->
-<!--                    >-->
-<!--                      {{ errors.rfid }}-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-<!--                  <div class="mb-3 col-md-6">-->
-<!--                    <label class="form-label" for="therfid">RFID</label>-->
-<!--                    <input-->
-<!--                     id="therfid"-->
-<!--                      v-model="rfid"-->
-<!--                      v-bind="rfidAttrs"-->
-<!--                      type="text"-->
-<!--                      class="form-control"-->
-<!--                      autocomplete="off"-->
-<!--                    />-->
-<!--                    <div-->
-<!--                      style="width: 100%; margin-top: 0.25rem; font-size: 0.875em; color: #e41a01"-->
-<!--                    >-->
-<!--                      {{ errors.rfid }}-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-
-<!--                  <div class="mb-12 col-md-12">-->
-<!--                    <label class="form-label">Notes</label>-->
-<!--                    <textarea-->
-<!--                      v-model="notes"-->
-<!--                      v-bind="notesAttrs"-->
-<!--                      class="form-txtarea form-control"-->
-<!--                      rows="4"-->
-<!--                      id="comment"-->
-<!--                      autocomplete="off"-->
-<!--                    ></textarea>-->
-<!--                    <div-->
-<!--                      style="width: 100%; margin-top: 0.25rem; font-size: 0.875em; color: #e41a01"-->
-<!--                    >-->
-<!--                      {{ errors.notes }}-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <hr />-->
-
-<!--                <button-->
-<!--                  type="submit"-->
-<!--                  class="btn btn-lg btn-primary w-100 mb-5"-->
-<!--                  style="background-color: #e41a01 !important"-->
-<!--                  :disabled="loading"-->
-<!--                >-->
-<!--                  Create Post-->
-<!--                </button>-->
-
-<!--                <Spinner v-if="loading" />-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </form>-->
     </SectionMain>
   </div>
 </template>
+
+
+<style>
+.is-invalid {
+  border: 1px solid #956666;
+}
+
+.error-message {
+  color: #e41a01;
+  font-size: 0.7em;
+}
+</style>

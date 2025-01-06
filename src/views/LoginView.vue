@@ -12,7 +12,7 @@ import BaseButtons from '@/components/BaseButtons.vue'
 import LayoutGuest from '@/layouts/LayoutGuest.vue'
 
 const form = reactive({
-  login: 'john.doe',
+  login: 'Admin',
   pass: 'highly-secure-password-fYjUw-',
   remember: true
 })
