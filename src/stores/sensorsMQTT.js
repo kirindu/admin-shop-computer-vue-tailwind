@@ -13,7 +13,7 @@ export const useSensorDHTStore = defineStore("sensorDHT", () => {
     const relay_status = ref(null);
     const client = ref(null);
 
-    const url = "ws://5.78.130.1:9001/mqtt";
+    const url = "wss://5.78.130.1:9001/mqtt";
 
     const options = {
         // Clean session
