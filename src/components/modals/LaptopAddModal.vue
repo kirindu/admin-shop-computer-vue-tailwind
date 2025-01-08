@@ -88,7 +88,7 @@ const handleSubmit = async () => {
         }).then(() => {
             closeModal().then(() => {
             //  router.go() // Recarga la pagina actual
-              router.push('/');
+              router.push('/dashboard');
             })
         })
       } else {
