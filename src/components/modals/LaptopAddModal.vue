@@ -87,7 +87,8 @@ const handleSubmit = async () => {
           allowOutsideClick: false
         }).then(() => {
             closeModal().then(() => {
-              router.go() // Recarga la pagina actual
+            //  router.go() // Recarga la pagina actual
+              router.push('/');
             })
         })
       } else {
