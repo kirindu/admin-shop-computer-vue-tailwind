@@ -23,10 +23,10 @@ defineProps({
 
 onMounted(() => {
 
- 
+
 })
 
- 
+
 
 </script>
 
@@ -65,8 +65,8 @@ onMounted(() => {
       <path :d="mdiIcon" />
     </svg>
   </div>
-  
-  
+
+
         </td>
         <td data-label="Name">
         {{mov.shopComputer.name}}
@@ -78,7 +78,7 @@ onMounted(() => {
           {{mov.state}}
         </td>
         <td data-label="City">
-          {{formattingDate(mov.dateCheckIn, "MMMM D, YYYY h:mm A")}}
+          {{formattingDate(mov.createdAt, "MMMM D, YYYY h:mm A")}}
         </td>
         <td data-label="Created" class="lg:w-1 whitespace-nowrap">
           <span class="text-gray-500 dark:text-slate-400" > {{mov.notes}}</span>
