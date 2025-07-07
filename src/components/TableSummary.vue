@@ -37,7 +37,7 @@ onMounted(() => {
       <tr>
         <th v-if="checkable" />
         <th />
-        <th>Shop Computer</th>
+        <th>Shop Computer / Tablets</th>
         <th>User</th>
         <th>State</th>
         <th>Date</th>

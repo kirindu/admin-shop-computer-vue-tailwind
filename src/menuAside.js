@@ -1,7 +1,7 @@
 import {
   mdiMonitorDashboard ,
   mdiLaptop ,
-  mdiAccountMultiple 
+  mdiAccountMultiple
 } from '@mdi/js'
 
 export default [
@@ -12,8 +12,8 @@ export default [
   },
   {
     to: '/shop',
-    label: 'Laptops',
-    icon: mdiLaptop 
+    label: 'Laptops / Tablets',
+    icon: mdiLaptop
   },
   {
     to: '/user',
